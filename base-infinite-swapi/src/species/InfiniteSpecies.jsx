@@ -9,6 +9,7 @@ const fetchUrl = async (url) => {
 };
 
 export function InfiniteSpecies() {
+  // for infinitequery guide see https://react-query.tanstack.com/reference/useInfiniteQuery
   const {data, fetchNextPage, hasNextPage, isLoading, isError, error, isFetching } = useInfiniteQuery(
     "sw-species",
     ({ pageParam = initialUrl }) => fetchUrl(pageParam),

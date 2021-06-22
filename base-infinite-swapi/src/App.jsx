@@ -8,6 +8,7 @@ import { InfiniteSpecies } from "./species/InfiniteSpecies";
 function App() {
   const queryClient = new QueryClient()
   return (
+    // set up query client
     <QueryClientProvider client = {queryClient}>
     <div className="App">
       <h1>Infinite SWAPI</h1>
