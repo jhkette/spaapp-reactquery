@@ -46,9 +46,9 @@ export function Signin(): ReactElement {
                 <Input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   onBlur={() =>
-                    setDirty((prevDirty) => ({ ...prevDirty, email: true }))
+                    setDirty(prevDirty => ({ ...prevDirty, email: true }))
                   }
                 />
                 <FormErrorMessage>Email may not be blank</FormErrorMessage>
@@ -62,9 +62,9 @@ export function Signin(): ReactElement {
                 <Input
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   onBlur={() =>
-                    setDirty((prevDirty) => ({ ...prevDirty, password: true }))
+                    setDirty(prevDirty => ({ ...prevDirty, password: true }))
                   }
                 />
                 <FormErrorMessage>Password may not be blank</FormErrorMessage>

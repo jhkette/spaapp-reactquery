@@ -1,7 +1,7 @@
 // @ts-nocheck
 import dayjs from 'dayjs';
-import { Dispatch, SetStateAction, useState } from 'react';
-
+import { Dispatch, SetStateAction, useEffect, useState, useCallback } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
 import { useUser } from '../../user/hooks/useUser';
@@ -19,6 +19,8 @@ async function getAppointments(
 }
 
 // types for hook return object
+// the use appointments hook returns status for if we are showing 
+// all appointments or not. Also has a method to change it. 
 interface UseAppointments {
   appointments: AppointmentDateMap;
   monthYear: MonthYear;
@@ -26,6 +28,13 @@ interface UseAppointments {
   showAll: boolean;
   setShowAll: Dispatch<SetStateAction<boolean>>;
 }
+
+/// common options for both Usequery and other
+const commonOptions = {
+  staleTime: 0,
+  cacheTime: 30000
+}
+
 
 // The purpose of this hook:
 //   1. track the current month/year (aka monthYear) selected by the user
@@ -58,19 +67,61 @@ export function useAppointments(): UseAppointments {
   // We need the user to pass to getAvailableAppointments so we can show
   //   appointments that the logged-in user has reserved (in white)
   const { user } = useUser();
+  
+  // select function -this gets available appointemnts
+  // useCallback - makes it a stable function.
+  // THIS IS BECAUSE - react query memo -izes to reduce unnecessary computation
+  // triple equals comparison of SELECT function
+  // only runs if data changes and the function has changed
+  // we use useCallback her to make it a stable function
+  // otherwise it would be an anonymous function and would (inevitably) change every time
+  // usecallback makes a stable function out of an anonymous function. 
+  const selectFn = useCallback((data) => getAvailableAppointments(data, user), [user])
+    
+
+  // create queryClient instance
+  const queryClient = useQueryClient();
+
+  // declare useEffect hook, monthYear will be the dependency
+  useEffect(() => {
+    // get the next month - assign to variable
+    const nextMonthYear = getNewMonthYear(monthYear, 1);
+    // queryClient fetches next month
+    queryClient.prefetchQuery(
+      [queryKeys.appointments, nextMonthYear.year, nextMonthYear.month],
+      () => getAppointments(nextMonthYear.year, nextMonthYear.month),
+      commonOptions
+    ); // runs everytime monthYear changes
+  }, [queryClient, monthYear]);
 
   /** ****************** END 2: filter appointments  ******************** */
   /** ****************** START 3: useQuery  ***************************** */
   // useQuery call for appointments for the current monthYear
 
-  // TODO: update with useQuery!
+
   // Notes:
-  //    1. appointments is an AppointmentDateMap (object with days of month
+  //    1. appointments is an AppointmentDateMap (object with days of month/
   //       as properties, and arrays of appointments for that day as values)
-  //
   //    2. The getAppointments query function needs monthYear.year and
   //       monthYear.month
-  const appointments = {};
+  const fallback = {};
+  
+  const { data: appointments = fallback } = useQuery(
+    [queryKeys.appointments, monthYear.year, monthYear.month],
+    () => getAppointments(monthYear.year, monthYear.month),
+    // give it a select function. if show all state is true, just return 
+    // all. if false run selectFn 
+    // SELECT is an inbuilt function in REACTQUERY - used to transform
+    // data 
+    // https://tkdodo.eu/blog/react-query-data-transformations
+    // useful blog on react query data. 
+    {select: showAll ? undefined : selectFn,
+      ...commonOptions,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true
+    }
+  );
 
   /** ****************** END 3: useQuery  ******************************* */
 

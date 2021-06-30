@@ -3,8 +3,11 @@ import { ReactElement } from 'react';
 import { GiFlowerPot } from 'react-icons/gi';
 
 import { BackgroundImage } from '../common/BackgroundImage';
+import {usePrefetchTreatment} from '../treatments/hooks/useTreatments';
 
 export function Home(): ReactElement {
+  // we are prefetching treatments as user goes here v frequently after home page
+  usePrefetchTreatment();
   return (
     <Stack align="center" justify="center" height="84vh">
       <BackgroundImage />

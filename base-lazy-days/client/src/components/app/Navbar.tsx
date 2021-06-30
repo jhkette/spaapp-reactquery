@@ -38,7 +38,7 @@ export function Navbar(): ReactElement {
             <Icon w={8} h={8} as={GiFlowerPot} />
           </NavLink>
           <HStack as="nav" spacing={4}>
-            {Links.map((link) => (
+            {Links.map(link => (
               <NavLink key={link} to={`/${link}`}>
                 {link}
               </NavLink>

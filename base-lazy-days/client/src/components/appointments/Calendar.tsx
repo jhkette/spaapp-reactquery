@@ -50,7 +50,7 @@ export function Calendar(): ReactElement {
           right="10px"
           checked={!showAll}
           defaultIsChecked
-          onChange={() => setShowAll((prevValue) => !prevValue)}
+          onChange={() => setShowAll(prevValue => !prevValue)}
         >
           Only show available
         </Checkbox>

@@ -8,6 +8,10 @@ interface UseAuth {
   signout: () => void;
 }
 
+ // USE AUTH 'S JOB IS TO COMMUNICATE WITH THE SERVER
+ // AND DETERMINE IF THE USER IS VALID. IE VERIFY LOGIN,
+ // THEN PASS DATA TO USEUSER
+
 export function useAuth(): UseAuth {
   const SERVER_ERROR = 'There was an error contacting the server.';
   const toast = useCustomToast();

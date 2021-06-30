@@ -16,7 +16,7 @@ export function AllStaff(): ReactElement {
         Our Staff
       </Heading>
       <HStack m={10} spacing={8} justify="center">
-        {staff.map((staffData) => (
+        {staff.map(staffData => (
           <Staff key={staffData.id} staffData={staffData} />
         ))}
       </HStack>
@@ -24,7 +24,7 @@ export function AllStaff(): ReactElement {
         <HStack my={10} spacing={8} justify="center">
           <Heading size="md">Filter by treatment:</Heading>
           <Radio value="all">All</Radio>
-          {treatments.map((t) => (
+          {treatments.map(t => (
             <Radio key={t.id} value={t.name}>
               {t.name}
             </Radio>
